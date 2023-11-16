@@ -1,5 +1,6 @@
 package nl.tudelft.jpacman.level;
 
+import nl.tudelft.jpacman.PacmanConfigurationException;
 import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.npc.ghost.Blinky;
 import org.junit.jupiter.api.Assertions;
@@ -46,6 +47,27 @@ public class MapParserTest {
         Mockito.verify(boardFactory, Mockito.atLeast(1)).createWall();
 
     }
+
+    /**
+     * Test for the parseMap method with a bad map containing inconsistent row sizes.
+     */
+    @Test
+    public void testParseMapWrong1() {
+        PacmanConfigurationException thrown =
+            Assertions.assertThrows(PacmanConfigurationException.class, () -> {
+                MockitoAnnotations.initMocks(this);
+                assertNotNull(boardFactory);
+                assertNotNull(levelFactory);
+                MapParser mapParser = new MapParser(levelFactory, boardFactory);
+                ArrayList<String> map = new ArrayList<>();
+                map.add("########");
+                map.add("#P      G#");
+                map.add("######");
+                mapParser.parseMap(map);
+            });
+        Assertions.assertEquals("Input text lines are not of equal width.", thrown.getMessage());
+    }
+
 
 }
 
